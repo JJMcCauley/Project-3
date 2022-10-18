@@ -56,12 +56,14 @@ themeOptions.addEventListener('change', function () {
             jsPunsOptions[x].hidden = false;
             heartOptions[x].hidden = true;
         }
+        jsPunsOptions[0].selected = true;
     }
     else {
         for (let x = 0; x < jsPunsOptions.length; x++) {
             jsPunsOptions[x].hidden = true;
             heartOptions[x].hidden = false;
         }
+        heartOptions[0].selected = true;
     }
 });
 // Register for Activities
@@ -117,11 +119,29 @@ const form = document.querySelector('form');
 const validateName = () => {
     const name = document.getElementById('name');
     const nameHint = document.getElementById('name-hint')
+    let nameHintHtml = ''
     const checkName = (name) => {
-        const nameRegEx = /^[a-zA-Z]+/u;
+        const nameRegEx = /^[a-zA-Z][a-zA-Z\s]*$/u;
         return nameRegEx.test(name)
     }
+    const checkEmpty = (name) => {
+        if (name.value === '') {
+            return true;
+        }
+    }
+    const checkFirstLetter = (name) => {
+        const firstLetterRegEx = /^[a-zA-Z]/;
+        return firstLetterRegEx.test(name);
+    }
+    if (checkEmpty(name)) {
+        nameHintHtml += 'Name field cannot be blank<br>';
+    }
+    if (!checkFirstLetter(name)) {
+        nameHintHtml += `First character must be a letter<br>`
+    }
     if (!checkName(name.value)) {
+        nameHintHtml += `Name must consist of letters and spaces only`;
+        nameHint.innerHTML = nameHintHtml;
         turnOnDisplay(nameHint)
         name.parentElement.classList.remove('valid')
         name.parentElement.classList.add('not-valid')
@@ -151,9 +171,10 @@ const validateEmail = () => {
 }
 
 const activities = document.getElementById('activities')
+const activitiyCheckboxes = document.querySelectorAll('#activities [type="checkbox"]');
+
 
 const validateRegistry = () => {
-    const activitiyCheckboxes = document.querySelectorAll('#activities [type="checkbox"]');
     const registryHint = document.getElementById('activities-hint');
     let checkedActivities = 0;
     for (let i = 0; i < activitiyCheckboxes.length; i++) {
@@ -243,6 +264,26 @@ const validateForm = (e) => {
         e.preventDefault();
     }
 }
+
+const checkForScheduleConflicts = (node) => {
+    const activityTime = node.dataset.dayAndTime;
+    const activityName = node.name;
+    for (let i = 0; i < activitiyCheckboxes.length; i++) {
+        const currentCheckbox = activitiyCheckboxes[i];
+        if (node.checked) {
+            if (currentCheckbox.name !== activityName && currentCheckbox.dataset.dayAndTime === activityTime) {
+                currentCheckbox.parentElement.classList.add('disabled')
+                currentCheckbox.disabled = true;
+            }
+        } else {
+            if (currentCheckbox.name !== activityName && currentCheckbox.dataset.dayAndTime === activityTime) {
+                currentCheckbox.parentElement.classList.remove('disabled')
+                currentCheckbox.disabled = false;
+            }
+        }
+    }
+}
+
 form.addEventListener('keyup', (e) => {
     if (e.target.id === 'name') {
         validateName();
@@ -277,9 +318,23 @@ form.addEventListener('focusout', (e) => {
         validateCvv();
     }
 })
-activities.addEventListener('change', () => {
+activities.addEventListener('change', (e) => {
     validateRegistry()
+    checkForScheduleConflicts(e.target);
 })
 form.addEventListener('submit', (e) => {
     validateForm(e);
 })
+
+// add focus class to focused checkboxes
+
+for (let i = 0; i < activitiyCheckboxes.length; i++) {
+    const activeCheckBox = activitiyCheckboxes[i];
+    activeCheckBox.addEventListener('focus', function () {
+        this.parentElement.classList.add('focus')
+    })
+    activeCheckBox.addEventListener('blur', function () {
+        this.parentElement.classList.remove('focus')
+    })
+}
+
