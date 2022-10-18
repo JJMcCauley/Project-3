@@ -32,7 +32,11 @@ document.getElementById('title').addEventListener('change', function () {
 const colorOptions = document.getElementById('color');
 colorOptions.disabled = true;
 
-// Toggle Display of an element
+/**
+ * Shows or hides an element
+ *
+ * @param {element} element The element to be shown or hidden
+ */
 const turnOnDisplay = (element) => {
     element.style.display = 'inherit';
 }
@@ -42,10 +46,9 @@ const turnOffDisplay = (element) => {
 }
 
 /**
- * Shows or hide color options based on selected theme
+ * Shows or hide t-shirt color options based on selected theme
  *
  */
-//T shirt info
 const themeOptions = document.getElementById('design');
 themeOptions.addEventListener('change', function () {
     const jsPunsOptions = document.querySelectorAll('[data-theme="js puns"]')
@@ -66,7 +69,11 @@ themeOptions.addEventListener('change', function () {
         heartOptions[0].selected = true;
     }
 });
-// Register for Activities
+
+/**
+ * Allows for activities to be resistered for and adds up their price total
+ *
+ */
 const activitiesFieldset = document.getElementById('activities');
 const costField = document.getElementById('activities-cost');
 let activitiesCost = 0;
@@ -80,7 +87,10 @@ activitiesFieldset.addEventListener('change', (e) => {
 })
 
 
-// Payment Info
+/**
+ * Shows only selected payment method's information and defaults to credit  card
+ *
+ */
 const paymentInfo = document.getElementById('payment');
 let payingByCredit = false;
 const showPaymentInfo = (value) => {
@@ -105,7 +115,6 @@ const showPaymentInfo = (value) => {
     }
 }
 
-
 paymentInfo.children[1].selected = true;
 showPaymentInfo('credit-card');
 paymentInfo.addEventListener('change', function () {
@@ -113,9 +122,16 @@ paymentInfo.addEventListener('change', function () {
 })
 
 
-// Validate Form
+/**
+ * Form Validation
+ *
+ */
 const form = document.querySelector('form');
 
+/**
+ * validates name against several regular expressions and provides feedback based on which tests are passed
+ *
+ */
 const validateName = () => {
     const name = document.getElementById('name');
     const nameHint = document.getElementById('name-hint')
@@ -152,6 +168,10 @@ const validateName = () => {
     }
 }
 
+/**
+ * Validates email using a regular expression and provides feedback if invalid email is entered
+ *
+ */
 const validateEmail = () => {
     const email = document.getElementById('email');
     const emailHint = document.getElementById('email-hint');
@@ -170,10 +190,12 @@ const validateEmail = () => {
     }
 }
 
+/**
+ * Validates activities registered for by ensuring an activity has been chosen and disabling activities at the same time
+ *
+ */
 const activities = document.getElementById('activities')
 const activitiyCheckboxes = document.querySelectorAll('#activities [type="checkbox"]');
-
-
 const validateRegistry = () => {
     const registryHint = document.getElementById('activities-hint');
     let checkedActivities = 0;
@@ -195,6 +217,10 @@ const validateRegistry = () => {
 
 }
 
+/**
+ * Ensures valid credit card number has been entered
+ *
+ */
 const validateCreditCard = () => {
     const creditCard = document.getElementById('cc-num');
     const ccHint = document.getElementById('cc-hint');
@@ -213,6 +239,10 @@ const validateCreditCard = () => {
     }
 }
 
+/**
+ * Ensures valid zip code has been entered
+ *
+ */
 const validateZipCode = () => {
     const zipCode = document.getElementById('zip');
     const zipHint = document.getElementById('zip-hint');
@@ -230,6 +260,11 @@ const validateZipCode = () => {
         zipCode.parentElement.classList.add('valid')
     }
 }
+
+/**
+ * Ensures valid CVV has been entered
+ *
+ */
 const validateCvv = () => {
     const cvv = document.getElementById('cvv');
     const cvvHint = document.getElementById('cvv-hint');
@@ -248,12 +283,20 @@ const validateCvv = () => {
     }
 }
 
+/**
+ * Runs all credit card validations at once
+ *
+ */
 const validatePaymentInfo = () => {
     validateCreditCard();
     validateZipCode();
     validateCvv()
 }
 
+/**
+ * Runs all form validations
+ *
+ */
 const validateForm = (e) => {
     validateName();
     validateEmail();
@@ -265,6 +308,11 @@ const validateForm = (e) => {
     }
 }
 
+/**
+ * Checks a given registry entry for scheduling conflicts and disables or renables as appropriate
+ *
+ * @param {element} node Which group of nine students will be chosen
+ */
 const checkForScheduleConflicts = (node) => {
     const activityTime = node.dataset.dayAndTime;
     const activityName = node.name;
@@ -284,6 +332,9 @@ const checkForScheduleConflicts = (node) => {
     }
 }
 
+/**
+ * Validates a form field when a key is entered in one of their fields
+ */
 form.addEventListener('keyup', (e) => {
     if (e.target.id === 'name') {
         validateName();
@@ -301,6 +352,10 @@ form.addEventListener('keyup', (e) => {
         validateCvv();
     }
 })
+
+/**
+ * Validates a form field when it loses focus
+ */
 form.addEventListener('focusout', (e) => {
     if (e.target.id === 'name') {
         validateName();
@@ -318,6 +373,10 @@ form.addEventListener('focusout', (e) => {
         validateCvv();
     }
 })
+
+/**
+ * listens for a change to event registry checkbox state and validates registry
+ */
 activities.addEventListener('change', (e) => {
     validateRegistry()
     checkForScheduleConflicts(e.target);
@@ -326,8 +385,9 @@ form.addEventListener('submit', (e) => {
     validateForm(e);
 })
 
-// add focus class to focused checkboxes
-
+/**
+ * Adds focus class to all checkbox elements
+ */
 for (let i = 0; i < activitiyCheckboxes.length; i++) {
     const activeCheckBox = activitiyCheckboxes[i];
     activeCheckBox.addEventListener('focus', function () {
