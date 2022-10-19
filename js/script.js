@@ -133,6 +133,7 @@ const form = document.querySelector('form');
  *
  */
 const validateName = () => {
+    let errors = 0;
     const name = document.getElementById('name');
     const nameHint = document.getElementById('name-hint')
     let nameHintHtml = ''
@@ -151,6 +152,7 @@ const validateName = () => {
     }
     if (checkEmpty(name)) {
         nameHintHtml += 'Name field cannot be blank<br>';
+        errors++;
     }
     if (!checkFirstLetter(name)) {
         nameHintHtml += `First character must be a letter<br>`
@@ -161,11 +163,13 @@ const validateName = () => {
         turnOnDisplay(nameHint)
         name.parentElement.classList.remove('valid')
         name.parentElement.classList.add('not-valid')
+        errors++;
     } else {
         turnOffDisplay(nameHint)
         name.parentElement.classList.remove('not-valid')
         name.parentElement.classList.add('valid')
     }
+    return errors;
 }
 
 /**
@@ -173,6 +177,7 @@ const validateName = () => {
  *
  */
 const validateEmail = () => {
+    let errors = 0;
     const email = document.getElementById('email');
     const emailHint = document.getElementById('email-hint');
     const checkEmail = (email) => {
@@ -183,11 +188,13 @@ const validateEmail = () => {
         turnOnDisplay(emailHint)
         email.parentElement.classList.remove('valid')
         email.parentElement.classList.add('not-valid')
+        errors++;
     } else {
         turnOffDisplay(emailHint)
         email.parentElement.classList.remove('not-valid')
         email.parentElement.classList.add('valid')
     }
+    return errors;
 }
 
 /**
@@ -197,6 +204,7 @@ const validateEmail = () => {
 const activities = document.getElementById('activities')
 const activitiyCheckboxes = document.querySelectorAll('#activities [type="checkbox"]');
 const validateRegistry = () => {
+    let errors = 0;
     const registryHint = document.getElementById('activities-hint');
     let checkedActivities = 0;
     for (let i = 0; i < activitiyCheckboxes.length; i++) {
@@ -208,13 +216,14 @@ const validateRegistry = () => {
         activities.classList.remove('valid')
         activities.classList.add('not-valid')
         turnOnDisplay(registryHint);
+        errors++;
     }
     else {
         activities.classList.remove('not-valid')
         activities.classList.add('valid')
         turnOffDisplay(registryHint)
     }
-
+    return errors;
 }
 
 /**
@@ -222,6 +231,7 @@ const validateRegistry = () => {
  *
  */
 const validateCreditCard = () => {
+    let errors = 0;
     const creditCard = document.getElementById('cc-num');
     const ccHint = document.getElementById('cc-hint');
     const checkCC = (ccNum) => {
@@ -232,11 +242,13 @@ const validateCreditCard = () => {
         turnOnDisplay(ccHint)
         creditCard.parentElement.classList.remove('valid')
         creditCard.parentElement.classList.add('not-valid')
+        errors++;
     } else {
         turnOffDisplay(ccHint)
         creditCard.parentElement.classList.remove('not-valid')
         creditCard.parentElement.classList.add('valid')
     }
+    return errors;
 }
 
 /**
@@ -244,6 +256,7 @@ const validateCreditCard = () => {
  *
  */
 const validateZipCode = () => {
+    let errors = 0;
     const zipCode = document.getElementById('zip');
     const zipHint = document.getElementById('zip-hint');
     const checkZip = (zip) => {
@@ -254,11 +267,13 @@ const validateZipCode = () => {
         turnOnDisplay(zipHint)
         zipCode.parentElement.classList.remove('valid')
         zipCode.parentElement.classList.add('not-valid')
+        errors++;
     } else {
         turnOffDisplay(zipHint)
         zipCode.parentElement.classList.remove('not-valid')
         zipCode.parentElement.classList.add('valid')
     }
+    return errors;
 }
 
 /**
@@ -268,6 +283,7 @@ const validateZipCode = () => {
 const validateCvv = () => {
     const cvv = document.getElementById('cvv');
     const cvvHint = document.getElementById('cvv-hint');
+    let errors = 0;
     const checkCvv = (cvv) => {
         const cvvRegEx = /^[\d]{3}$/;
         return (cvvRegEx.test(cvv))
@@ -276,11 +292,13 @@ const validateCvv = () => {
         turnOnDisplay(cvvHint)
         cvv.parentElement.classList.remove('valid')
         cvv.parentElement.classList.add('not-valid')
+        errors++;
     } else {
         turnOffDisplay(cvvHint)
         cvv.parentElement.classList.remove('not-valid')
         cvv.parentElement.classList.add('valid')
     }
+    return errors;
 }
 
 /**
@@ -288,9 +306,11 @@ const validateCvv = () => {
  *
  */
 const validatePaymentInfo = () => {
-    validateCreditCard();
-    validateZipCode();
-    validateCvv()
+    let errors = 0;
+    errors += validateCreditCard();
+    errors += validateZipCode();
+    errors += validateCvv();
+    return errors;
 }
 
 /**
@@ -298,12 +318,14 @@ const validatePaymentInfo = () => {
  *
  */
 const validateForm = (e) => {
-    validateName();
-    validateEmail();
-    validateRegistry();
-    validatePaymentInfo();
-    const notValid = document.querySelectorAll('.not-valid');
-    if (notValid.length > 0) {
+    let errors = 0;
+    errors += validateName();
+    errors += validateEmail();
+    errors += validateRegistry();
+    if (payingByCredit) {
+        errors += validatePaymentInfo();
+    }
+    if (errors > 0) {
         e.preventDefault();
     }
 }
