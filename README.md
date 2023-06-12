@@ -1,3 +1,8 @@
+Treehouse-FSJS-Project-3-Form
+Form Validation
+
+Form HTML and CSS was provided, but handling validation of data was done using HTML and RegEx expressions.
+
 Notes on customized form validation customization
 
 The name field is put through three regular expressions and provides feedback based on three conditions
